@@ -28,7 +28,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           alt={product.name}
           width={200}
           height={200}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg p-5"
         />
       </div>
       <div className="flex items-center justify-between">
