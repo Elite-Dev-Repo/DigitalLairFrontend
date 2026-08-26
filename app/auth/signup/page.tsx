@@ -62,7 +62,7 @@ export default function SignupPage() {
     "border p-2.5 text-sm outline-none focus:border-primary w-full";
 
   return (
-    <section className="w-screen flex-1 flex items-center justify-center py-16">
+    <section className="w-full grow flex items-center justify-center py-16">
       <div className="w-full max-w-md mx-4 p-8 border bg-primary-foreground flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-semibold">Create Account</h1>
@@ -109,7 +109,10 @@ export default function SignupPage() {
             <select
               value={form.gender}
               onChange={(e) =>
-                handleChange("gender", e.target.value as RegisterPayload["gender"])
+                handleChange(
+                  "gender",
+                  e.target.value as RegisterPayload["gender"],
+                )
               }
               className={inputClass}
             >

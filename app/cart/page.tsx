@@ -84,7 +84,7 @@ const CartPage = () => {
 
   return (
     <RequireAuth>
-      <section className="w-screen flex-1 py-10">
+      <section className="w-full grow py-10">
         <div className="cont w-full h-full flex flex-col gap-6">
           <h1 className="text-3xl font-semibold">Your Cart</h1>
 
