@@ -25,26 +25,26 @@ export default function Navbar() {
   const displayName = user?.first_name || user?.email;
 
   return (
-    <nav className="h-17 border-b border-b-primary">
-      <div className="cont w-full h-full flex items-center justify-between">
+    <nav className="h-auto min-h-17 border-b border-b-primary">
+      <div className="cont w-full py-3 sm:py-0 sm:h-17 flex flex-wrap items-center justify-between gap-y-3">
         <Link href="/">
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={BoomBoxIcon} size={27} />
           </div>
         </Link>
 
-        <h1 className="text-3xl tracking-[0.5em] font-indie text-foreground px-4 py-2">
+        <h1 className="order-3 w-full text-center lg:order-none lg:w-auto text-xl sm:text-2xl lg:text-3xl tracking-[0.35em] lg:tracking-[0.5em] font-indie text-foreground px-0 sm:px-4 py-0">
           Digital Lair
         </h1>
-        <div className="flex items-center gap-7">
+        <div className="order-2 flex items-center gap-4 sm:gap-7">
           {navLinks.map((link, index) => (
             <Link key={index} href={link.href}>
               {link.icon}
             </Link>
           ))}
           {isAuthenticated && user ? (
-            <div className="flex items-center gap-7">
-              <div className="flex items-center gap-2">
+            <>
+              <div className="hidden md:flex items-center gap-2">
                 <HugeiconsIcon icon={UserIcon} size={18} />
                 <span className="text-sm font-medium max-w-32 truncate">
                   {displayName}
@@ -56,9 +56,9 @@ export default function Navbar() {
                 aria-label="Sign out"
               >
                 <HugeiconsIcon icon={Logout01Icon} size={18} />
-                <span>Sign Out</span>
+                <span className="hidden sm:inline">Sign Out</span>
               </button>
-            </div>
+            </>
           ) : (
             <Link
               href={`/auth/login${
@@ -66,10 +66,10 @@ export default function Navbar() {
                   ? `?redirect=${encodeURIComponent(pathname)}`
                   : ""
               }`}
-              className="flex items-center gap-2 bg-primary text-primary-foreground font-light px-4 py-2 rounded-sm"
+              className="flex items-center gap-2 bg-primary text-primary-foreground font-light px-3 sm:px-4 py-2 rounded-sm"
             >
               <HugeiconsIcon icon={Login01Icon} size={17} />
-              Sign In
+              <span className="hidden sm:inline">Sign In</span>
             </Link>
           )}
         </div>

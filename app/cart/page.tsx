@@ -111,9 +111,9 @@ const CartPage = () => {
                   return (
                     <div
                       key={cartItem.id}
-                      className="flex items-center gap-4 p-4 border bg-primary-foreground"
+                      className="flex items-center gap-4 p-4 border bg-primary-foreground flex-wrap"
                     >
-                      <div className="w-20 h-20 bg-black/10 rounded-lg overflow-hidden shrink-0">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black/10 rounded-lg overflow-hidden shrink-0">
                         {product && (
                           <Image
                             src={product.image_url}
@@ -124,8 +124,8 @@ const CartPage = () => {
                           />
                         )}
                       </div>
-                      <div className="flex-1 flex flex-col gap-1">
-                        <p className="font-semibold">
+                      <div className="flex-1 min-w-0 flex flex-col gap-1">
+                        <p className="font-semibold truncate">
                           {product ? product.name : cartItem.product}
                         </p>
                         <p className="text-sm text-foreground/70">

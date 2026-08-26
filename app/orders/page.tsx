@@ -45,17 +45,17 @@ const OrdersPage = () => {
               {orders.map((order) => (
                 <div
                   key={order.id}
-                  className="flex items-center justify-between gap-4 p-4 border bg-primary-foreground"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 border bg-primary-foreground"
                 >
                   <div className="flex flex-col gap-1">
-                    <p className="font-semibold">{order.reference}</p>
+                    <p className="font-semibold break-all">{order.reference}</p>
                     <p className="text-sm text-foreground/70">
                       {order.items.length}{" "}
                       {order.items.length === 1 ? "item" : "items"} ·{" "}
                       {new Date(order.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4 sm:gap-6">
                     <span
                       className={`text-xs font-medium px-2 py-1 border ${
                         order.status === "Paid"

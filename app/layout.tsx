@@ -5,6 +5,7 @@ import "sonner/dist/styles.css";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-bricolage-grotesque",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AuthProvider>
           <Navbar />
           {children}
+          <Footer />
           <Toaster richColors position="top-center" />
         </AuthProvider>
       </body>
