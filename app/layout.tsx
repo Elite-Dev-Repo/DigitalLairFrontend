@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <Navbar />
-          <main className="w-full flex-grow flex flex-col">{children}</main>
+          <main className="w-full grow flex flex-col">{children}</main>
           <Footer />
           <Toaster richColors position="top-center" />
         </AuthProvider>

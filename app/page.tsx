@@ -7,7 +7,7 @@ import Shop from "@/components/Shop";
 export default function LandingPage() {
   return (
     <>
-      <section className="h-auto lg:h-screen w-screen">
+      <section className="w-full grow flex flex-col">
         <header className="cont w-full lg:h-[70vh] px-5 py-10 lg:py-0">
           <div className="w-full h-full flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="w-full lg:w-1/2 h-full flex flex-col items-start justify-center order-2 lg:order-none">
