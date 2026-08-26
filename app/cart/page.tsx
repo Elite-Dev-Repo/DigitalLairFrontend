@@ -2,23 +2,21 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons";
 import RequireAuth from "@/components/auth/RequireAuth";
 import { getCart, removeFromCart } from "@/api/cart";
-import { createOrder } from "@/api/orders";
 import { getProducts } from "@/api/products";
 import { toast } from "sonner";
 import type { Cart, CartItem } from "@/types/cart";
 import type Product from "@/types/productInterface";
-import type { CreateOrderResponse } from "@/types/order";
 
 const CartPage = () => {
   const [cart, setCart] = useState<Cart | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [checkingOut, setCheckingOut] = useState(false);
 
   const reload = useCallback(async () => {
     setError(null);
@@ -69,18 +67,7 @@ const CartPage = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    setCheckingOut(true);
-    try {
-      const result: CreateOrderResponse = await createOrder();
-      toast.success("Redirecting to secure payment…");
-      window.location.assign(result.authorization_url);
-    } catch {
-      toast.error("Could not start checkout. Please try again.");
-      setError("Could not start checkout. Please try again.");
-      setCheckingOut(false);
-    }
-  };
+
 
   return (
     <RequireAuth>
@@ -154,13 +141,12 @@ const CartPage = () => {
                     &#8358;{Number(cart.total).toFixed(2)}
                   </p>
                 </div>
-                <button
-                  onClick={handleCheckout}
-                  disabled={checkingOut}
-                  className="bg-primary text-primary-foreground font-light px-4 py-2.5 rounded-sm disabled:opacity-60"
+                <Link
+                  href="/checkout"
+                  className="bg-primary text-primary-foreground font-light px-4 py-2.5 rounded-sm text-center"
                 >
-                  {checkingOut ? "Redirecting to payment…" : "Checkout"}
-                </button>
+                  Proceed to Checkout
+                </Link>
               </div>
             </>
           )}

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
 import speaker_hero from "@/public/images/speaker-hero3.png";
 import RecentProducts from "@/components/RecentProducts";
+import FeaturedSections from "@/components/FeaturedSections";
 import Shop from "@/components/Shop";
 
 export default function LandingPage() {
@@ -10,7 +10,7 @@ export default function LandingPage() {
       <section className="w-full grow flex flex-col">
         <header className="cont w-full lg:h-[70vh] px-5 py-10 lg:py-0">
           <div className="w-full h-full flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="w-full lg:w-1/2 h-full flex flex-col items-start justify-center order-2 lg:order-none">
+            <div className="w-full lg:w-1/2 h-full flex flex-col items-start justify-center order-2 lg:order-0">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-foreground px-4 py-2 text-center lg:text-left">
                 High quality digital products <br /> for your everyday needs.
               </h1>
@@ -26,7 +26,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="w-full lg:w-1/2 h-full flex items-center justify-center order-1 lg:order-none">
+            <div className="w-full lg:w-1/2 h-full flex items-center justify-center order-1 lg:order-0">
               <Image
                 src={speaker_hero}
                 alt="Hero"
@@ -39,6 +39,7 @@ export default function LandingPage() {
         </header>
 
         <RecentProducts />
+        <FeaturedSections />
         <Shop />
       </section>
     </>
