@@ -54,8 +54,10 @@ const ProductCard = ({ product }: { product: Product }) => {
           className="w-full h-full object-cover rounded-lg p-5"
         />
       </div>
-      <div className="flex items-center justify-between">
-        <p className="capitalize font-bold">{product.name}</p>
+      <div className="flex items-center justify-between gap-4">
+        <p className="capitalize font-bold text-sm text-primary">
+          {product.name}
+        </p>
         <p className="text-sm ">&#8358;{product.price}</p>
       </div>
       <div className="flex items-center gap-2">
