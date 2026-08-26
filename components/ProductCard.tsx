@@ -9,9 +9,32 @@ import {
 } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { addToCart } from "@/api/cart";
+import { useAuth } from "@/components/auth/auth-provider";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+      return;
+    }
+    setAdding(true);
+    try {
+      await addToCart(product.id, quantity);
+      toast.success(`${product.name} added to cart`);
+    } catch {
+      toast.error("Could not add item to cart. Please try again.");
+    } finally {
+      setAdding(false);
+    }
+  };
 
   const handleQuantityChange = (action: "add" | "remove") => {
     if (action === "add") {
@@ -35,9 +58,6 @@ const ProductCard = ({ product }: { product: Product }) => {
         <p className="capitalize font-bold">{product.name}</p>
         <p className="text-sm ">&#8358;{product.price}</p>
       </div>
-      <p className="text-[13px] text-gray-900 line-clamp-2">
-        {product.description}
-      </p>
       <div className="flex items-center gap-2">
         {product.tags && product.tags.length > 1 ? (
           product.tags.map((tag: string, index: number) => (
@@ -72,7 +92,11 @@ const ProductCard = ({ product }: { product: Product }) => {
           </div>
         </div>
 
-        <button className="bg-black text-sm text-primary-foreground font-light px-4 py-2 rounded-sm flex items-center gap-2">
+        <button
+          onClick={handleAddToCart}
+          disabled={adding}
+          className="bg-black text-sm text-primary-foreground font-light px-4 py-2 rounded-sm flex items-center gap-2 disabled:opacity-60"
+        >
           <p className="text-sm font-bold w-5 h-5 flex items-center justify-center bg-white rounded-sm text-foreground">
             {quantity}
           </p>

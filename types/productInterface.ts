@@ -1,9 +1,8 @@
 interface Product {
   id: string;
   name: string;
-  description: string;
   price: number;
-  category: number;
+  category: string;
   tags: string[];
   stock: number;
   status: string;

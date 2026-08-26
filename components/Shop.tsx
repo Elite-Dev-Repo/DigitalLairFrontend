@@ -50,9 +50,15 @@ const Shop = () => {
         </div>
         <div className="grid grid-cols-3 gap-3">
           {products &&
-            products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            (activeCategory === "all"
+              ? products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))
+              : products
+                  .filter((product) => product.category === activeCategory)
+                  .map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  )))}
         </div>
       </div>
     </section>
