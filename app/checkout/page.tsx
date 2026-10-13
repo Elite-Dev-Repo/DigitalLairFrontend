@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ShoppingCart01Icon, ArrowLeft02Icon } from "@hugeicons/core-free-icons";
+import {
+  ShoppingCart01Icon,
+  ArrowLeft02Icon,
+} from "@hugeicons/core-free-icons";
 import RequireAuth from "@/components/auth/RequireAuth";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getCart } from "@/api/cart";
@@ -14,6 +17,13 @@ import { toast } from "sonner";
 import type { Cart } from "@/types/cart";
 import type Product from "@/types/productInterface";
 import type { CreateOrderResponse } from "@/types/order";
+import axios from "axios";
+import { ACCESS } from "@/api/constants";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+type IdempotencyType = {
+  key: string;
+  amount: string;
+};
 
 type CheckoutForm = {
   full_name: string;
@@ -73,6 +83,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<CheckoutForm>(initialForm);
   const [errors, setErrors] = useState<FormErrors>({});
+  const paymentRef = useRef<null | IdempotencyType>(null);
 
   useEffect(() => {
     let active = true;
@@ -111,9 +122,7 @@ export default function CheckoutPage() {
 
   const handleChange =
     (field: keyof CheckoutForm) =>
-    (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
       if (errors[field]) {
         setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -148,38 +157,57 @@ export default function CheckoutPage() {
       toast.error("Your cart is empty.");
       return;
     }
-    setSubmitting(true);
-    try {
-      // Build metadata exactly as expected by Order.metadata JSONField
-      const metadata: Record<string, string> = {
-        full_name: form.full_name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        delivery_address: form.delivery_address.trim(),
-        city: form.city.trim(),
-        state: form.state.trim(),
-        postal_code: form.postal_code.trim(),
-      };
-      if (form.delivery_notes.trim()) {
-        metadata.delivery_notes = form.delivery_notes.trim();
-      }
 
-      const result: CreateOrderResponse = await createOrder(metadata);
-      toast.success("Order created. Redirecting to payment…");
-      window.location.assign(result.authorization_url);
-    } catch (err: unknown) {
-      const message =
-        typeof err === "object" &&
-        err !== null &&
-        "response" in err &&
-        (err as { response?: { data?: { error?: string } } }).response?.data
-          ?.error
-          ? (err as { response: { data: { error: string } } }).response.data
-              .error
-          : "Could not place order. Please try again.";
-      setError(message);
-      toast.error(message);
-      setSubmitting(false);
+    if (!paymentRef.current) {
+      paymentRef.current = {
+        key: crypto.randomUUID(),
+        amount: Number(cart.total).toFixed(2),
+      };
+    } else {
+      setSubmitting(true);
+
+      try {
+        // Build metadata exactly as expected by Order.metadata JSONField
+        const metadata: Record<string, string> = {
+          full_name: form.full_name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          delivery_address: form.delivery_address.trim(),
+          city: form.city.trim(),
+          state: form.state.trim(),
+          postal_code: form.postal_code.trim(),
+        };
+        if (form.delivery_notes.trim()) {
+          metadata.delivery_notes = form.delivery_notes.trim();
+        }
+
+        // const result: CreateOrderResponse = await createOrder(metadata);
+        const result: CreateOrderResponse = await axios.post(
+          `${API_URL}order/`,
+          metadata,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(ACCESS)}`,
+              "Idempotency-Key": paymentRef.current.key,
+            },
+          },
+        );
+        toast.success("Order created. Redirecting to payment…");
+        // window.location.assign(result.authorization_url);
+      } catch (err: unknown) {
+        const message =
+          typeof err === "object" &&
+          err !== null &&
+          "response" in err &&
+          (err as { response?: { data?: { error?: string } } }).response?.data
+            ?.error
+            ? (err as { response: { data: { error: string } } }).response.data
+                .error
+            : "Could not place order. Please try again.";
+        setError(message);
+        toast.error(message);
+        setSubmitting(false);
+      }
     }
   };
 
@@ -231,7 +259,9 @@ export default function CheckoutPage() {
                   <h2 className="text-xl font-semibold">Delivery Details</h2>
                   <p className="text-sm text-foreground/60">
                     These details will be saved as{" "}
-                    <span className="font-medium text-foreground">metadata</span>{" "}
+                    <span className="font-medium text-foreground">
+                      metadata
+                    </span>{" "}
                     on your order for shipping & contact.
                   </p>
                 </div>
@@ -244,6 +274,10 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       value={form.full_name}
+                      pattern="[A-Za-z\s]+"
+                      // onInput={
+                      // (this.value = this.value.replace(/[^a-zA-Z\s]/g, ""))
+                      // }
                       onChange={handleChange("full_name")}
                       placeholder="John Doe"
                       className={`${inputBase} ${errors.full_name ? errorInput : ""}`}
@@ -402,7 +436,8 @@ export default function CheckoutPage() {
               {/* Order Summary */}
               <div className="lg:col-span-2 flex flex-col gap-4 p-6 border bg-primary-foreground lg:sticky lg:top-6">
                 <h2 className="text-xl font-semibold">
-                  Order Summary ({cart.items.length} {cart.items.length === 1 ? "item" : "items"})
+                  Order Summary ({cart.items.length}{" "}
+                  {cart.items.length === 1 ? "item" : "items"})
                 </h2>
 
                 <div className="flex flex-col gap-3 max-h-[40vh] overflow-y-auto pr-1">
@@ -449,7 +484,9 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-foreground/70">Delivery</span>
-                    <span className="text-foreground/60">Calculated at next step</span>
+                    <span className="text-foreground/60">
+                      Calculated at next step
+                    </span>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t font-semibold">
                     <span>Total</span>

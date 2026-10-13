@@ -12,7 +12,7 @@ import {
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 6;
 
 const Shop = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,26 +27,29 @@ const Shop = () => {
 
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
-  const fetchProducts = useCallback(async (pageNum: number, category: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = await (getPaginatedProducts as any)({
-        page: pageNum,
-        pageSize: PAGE_SIZE,
-        category,
-      });
-      setProducts(data.results ?? []);
-      setCount(data.count ?? 0);
-      setNext(data.next ?? null);
-      setPrevious(data.previous ?? null);
-    } catch {
-      setError("Could not load products. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchProducts = useCallback(
+    async (pageNum: number, category: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data = await (getPaginatedProducts as any)({
+          page: pageNum,
+          pageSize: PAGE_SIZE,
+          category,
+        });
+        setProducts(data.results ?? []);
+        setCount(data.count ?? 0);
+        setNext(data.next ?? null);
+        setPrevious(data.previous ?? null);
+      } catch {
+        setError("Could not load products. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   // Initial categories load
   useEffect(() => {

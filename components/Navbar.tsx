@@ -34,14 +34,15 @@ export default function Navbar() {
     <nav className="h-auto min-h-17 border-b border-b-primary">
       <div className="cont w-full py-3 sm:py-0 sm:h-17 flex flex-wrap items-center justify-between gap-y-3">
         <Link href="/">
-          <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={BoomBoxIcon} size={27} />
+          <div className="flex items-center justify-center">
+            <div className="flex justify-center items-center gap-2">
+              <HugeiconsIcon icon={BoomBoxIcon} size={27} />
+            </div>
+            <h1 className="order-3 w-full text-center lg:order-none lg:w-auto text-xl sm:text-2xl lg:text-3xl tracking-[0.35em] lg:tracking-[0.5em] font-indie text-foreground px-0 sm:px-4 py-0">
+              Digital Lair
+            </h1>
           </div>
         </Link>
-
-        <h1 className="order-3 w-full text-center lg:order-none lg:w-auto text-xl sm:text-2xl lg:text-3xl tracking-[0.35em] lg:tracking-[0.5em] font-indie text-foreground px-0 sm:px-4 py-0">
-          Digital Lair
-        </h1>
 
         <div className="order-2 flex items-center gap-4 sm:gap-7">
           {navLinks.map((link, index) => (
